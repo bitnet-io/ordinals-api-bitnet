@@ -1,0 +1,1 @@
+{"version":3,"file":"1694081119000_brc20-counts-by-tx-count.js","sourceRoot":"","sources":["../../migrations/1694081119000_brc20-counts-by-tx-count.ts"],"names":[],"mappings":";;;AAGa,QAAA,UAAU,GAAkC,SAAS,CAAC;AAEnE,SAAgB,EAAE,CAAC,GAAqB;IACtC,GAAG,CAAC,SAAS,CAAC,eAAe,EAAE;QAC7B,QAAQ,EAAE;YACR,IAAI,EAAE,QAAQ;YACd,OAAO,EAAE,CAAC;SACX;KACF,CAAC,CAAC;AACL,CAAC;AAPD,gBAOC"}
