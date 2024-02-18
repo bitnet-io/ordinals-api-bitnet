@@ -111,9 +111,6 @@ export const Brc20Routes: FastifyPluginCallback<
     }
   );
 
-
-
-
   fastify.get(
     '/bit-20/tokens/:ticker',
     {
@@ -122,28 +119,56 @@ export const Brc20Routes: FastifyPluginCallback<
         summary: 'BRC-20 Token Details',
         description: 'Retrieves information for a BRC-20 token including supply and holders',
         tags: ['BIT-20'],
+        querystring: Type.Object({
+          ticker: Type.Optional(Brc20TickersParam),
+          // Sorting
+          order_by: Type.Optional(Brc20TokensOrderByParam),
+          // Pagination
+          offset: Type.Optional(OffsetParam),
+          limit: Type.Optional(LimitParam),
+        }),
         params: Type.Object({
           ticker: Brc20TickerParam,
         }),
         response: {
-          200: Brc20TokenDetailsSchem,
-          404: NotFoundResponse,
+//          200: Brc20TokenDetailsSchem,
+//          404: NotFoundResponse,
         },
       },
     },
-    async (request, reply) => {
-      const token = await fastify.db.brc20.getToken({ ticker: request.params.ticker });
-      if (!token) {
-        await reply.code(404).send(Value.Create(NotFoundResponse));
-      } else {
-        await reply.send({
-          ticker: parseBrc20Token([token])[0],
-          supply: parseBrc20Suppl(token),
-        });
-      }
-    }
-  );
+//    async (request, reply) => {
+//      const token = await fastify.db.brc20.getToken({ ticker: request.params.ticker });
+//      if (!token) {
+//        await reply.code(404).send(Value.Create(NotFoundResponse));
+//      } else {
+//        await reply.send({
+//          token: parseBrc20Token([token])[0],
+//          supply: parseBrc20Suppl(token),
+//        });
+//      }
+//    }
 
+    async (request, reply) => {
+      const limit = request.query.limit ?? DEFAULT_API_LIMIT;
+      const offset = request.query.offset ?? 0;
+      const response = await fastify.db.brc20.getTokens({
+        limit,
+        offset,
+        ticker: request.query.ticker,
+        order_by: request.query.order_by,
+      });
+//      await reply.send(parseBrc20Token(response.results));
+
+      await reply.send({
+//        limit,
+//        offset,
+//        total: response.total,
+       ticker: parseBrc20Token(response.results),
+      });
+
+    }
+
+  );
 
 
 

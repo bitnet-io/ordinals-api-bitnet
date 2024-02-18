@@ -55,7 +55,7 @@ function brc20FromInscriptionContent(content) {
                     return;
                 if (json.lim && (parseFloat(json.lim) == 0 || numExceedsMax(json.lim)))
                     return;
-                if (json.dec && parseFloat(json.dec) > 18)
+                if (json.dec && parseFloat(json.dec) > 8)
                     return;
             }
             else {

@@ -394,7 +394,7 @@ export const Brc20BalanceResponseSchema = Type.Object({
   available_balance: Type.String({ examples: ['1500.00000'] }),
   transferrable_balance: Type.String({ examples: ['500.00000'] }),
   overall_balance: Type.String({ examples: ['2000.00000'] }),
-  decimals: Type.Integer({ examples: [18] }),
+  decimals: Type.Integer({ examples: [8] }),
 
 });
 export type Brc20BalanceResponse = Static<typeof Brc20BalanceResponseSchema>;
@@ -405,7 +405,7 @@ export const Brc20BalanceResponseSchem = Type.Object({
   available_balance: Type.String({ examples: ['1500.00000'] }),
   transferrable_balance: Type.String({ examples: ['500.00000'] }),
   overall_balance: Type.String({ examples: ['2000.00000'] }),
-  decimals: Type.Integer({ examples: [18] }),
+  decimals: Type.Integer({ examples: [8] }),
 
 });
 export type Brc20BalanceRespons = Static<typeof Brc20BalanceResponseSchem>;
@@ -444,7 +444,7 @@ export const Brc20ActivityResponseSchema = Type.Object({
     Type.Object({
       max_supply: Type.String({ examples: ['21000000'] }),
       mint_limit: Nullable(Type.String({ examples: ['100000'] })),
-      decimals: Type.Integer({ examples: [18] }),
+      decimals: Type.Integer({ examples: [8] }),
     })
   ),
   transfer: Type.Optional(
@@ -486,7 +486,7 @@ export const Brc20TokenResponseSchema = Type.Object(
     ticker: Type.String({ examples: ['PEPE'] }),
     max_supply: Type.String({ examples: ['21000000'] }),
     mint_limit: Nullable(Type.String({ examples: ['100000'] })),
-    decimals: Type.Integer({ examples: [18] }),
+    decimals: Type.Integer({ examples: [8] }),
     deploy_timestamp: Type.Integer({ examples: [1677733170000] }),
     minted_supply: Type.String({ examples: ['1000000'] }),
     tx_count: Type.Integer({ examples: [300000] }),
@@ -508,7 +508,7 @@ export const Brc20TokenResponseSchem = Type.Object(
   {
     tick: Type.String({ examples: ['PEPE'] }),
     max_supply: Type.String({ examples: ['21000000'] }),
-    decimals: Type.Integer({ examples: [18] }),
+    decimals: Type.Integer({ examples: [8] }),
     limit_per_mint: Nullable(Type.String({ examples: ['100000'] })),
     remaining_supply: Type.String({ examples: ['1000000'] }),
     deploy_incr_number: Type.Integer({ examples: [752860] }),

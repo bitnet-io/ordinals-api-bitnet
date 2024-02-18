@@ -69,7 +69,7 @@ export function brc20FromInscriptionContent(content: string): Brc20 | undefined 
       if (json.op === 'deploy') {
         if (parseFloat(json.max) == 0 || numExceedsMax(json.max)) return;
         if (json.lim && (parseFloat(json.lim) == 0 || numExceedsMax(json.lim))) return;
-        if (json.dec && parseFloat(json.dec) > 18) return;
+        if (json.dec && parseFloat(json.dec) > 8) return;
       } else {
         if (parseFloat(json.amt) == 0 || numExceedsMax(json.amt)) return;
       }

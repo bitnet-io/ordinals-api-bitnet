@@ -322,14 +322,14 @@ exports.Brc20BalanceResponseSchema = typebox_1.Type.Object({
     available_balance: typebox_1.Type.String({ examples: ['1500.00000'] }),
     transferrable_balance: typebox_1.Type.String({ examples: ['500.00000'] }),
     overall_balance: typebox_1.Type.String({ examples: ['2000.00000'] }),
-    decimals: typebox_1.Type.Integer({ examples: [18] }),
+    decimals: typebox_1.Type.Integer({ examples: [8] }),
 });
 exports.Brc20BalanceResponseSchem = typebox_1.Type.Object({
     tick: typebox_1.Type.String({ examples: ['PEPE'] }),
     available_balance: typebox_1.Type.String({ examples: ['1500.00000'] }),
     transferrable_balance: typebox_1.Type.String({ examples: ['500.00000'] }),
     overall_balance: typebox_1.Type.String({ examples: ['2000.00000'] }),
-    decimals: typebox_1.Type.Integer({ examples: [18] }),
+    decimals: typebox_1.Type.Integer({ examples: [8] }),
 });
 exports.Brc20ActivityResponseSchema = typebox_1.Type.Object({
     operation: typebox_1.Type.Union([
@@ -362,7 +362,7 @@ exports.Brc20ActivityResponseSchema = typebox_1.Type.Object({
     deploy: typebox_1.Type.Optional(typebox_1.Type.Object({
         max_supply: typebox_1.Type.String({ examples: ['21000000'] }),
         mint_limit: Nullable(typebox_1.Type.String({ examples: ['100000'] })),
-        decimals: typebox_1.Type.Integer({ examples: [18] }),
+        decimals: typebox_1.Type.Integer({ examples: [8] }),
     })),
     transfer: typebox_1.Type.Optional(typebox_1.Type.Object({
         amount: typebox_1.Type.String({ examples: ['1000000'] }),
@@ -395,7 +395,7 @@ exports.Brc20TokenResponseSchema = typebox_1.Type.Object({
     ticker: typebox_1.Type.String({ examples: ['PEPE'] }),
     max_supply: typebox_1.Type.String({ examples: ['21000000'] }),
     mint_limit: Nullable(typebox_1.Type.String({ examples: ['100000'] })),
-    decimals: typebox_1.Type.Integer({ examples: [18] }),
+    decimals: typebox_1.Type.Integer({ examples: [8] }),
     deploy_timestamp: typebox_1.Type.Integer({ examples: [1677733170000] }),
     minted_supply: typebox_1.Type.String({ examples: ['1000000'] }),
     tx_count: typebox_1.Type.Integer({ examples: [300000] }),
@@ -403,7 +403,7 @@ exports.Brc20TokenResponseSchema = typebox_1.Type.Object({
 exports.Brc20TokenResponseSchem = typebox_1.Type.Object({
     tick: typebox_1.Type.String({ examples: ['PEPE'] }),
     max_supply: typebox_1.Type.String({ examples: ['21000000'] }),
-    decimals: typebox_1.Type.Integer({ examples: [18] }),
+    decimals: typebox_1.Type.Integer({ examples: [8] }),
     limit_per_mint: Nullable(typebox_1.Type.String({ examples: ['100000'] })),
     remaining_supply: typebox_1.Type.String({ examples: ['1000000'] }),
     deploy_incr_number: typebox_1.Type.Integer({ examples: [752860] }),

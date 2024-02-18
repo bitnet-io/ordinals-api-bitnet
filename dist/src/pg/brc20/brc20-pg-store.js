@@ -9,7 +9,7 @@ const helpers_2 = require("./helpers");
 const schemas_1 = require("../../api/schemas");
 const helpers_3 = require("../helpers");
 /** The block at which BRC-20 activity began */
-exports.BRC20_GENESIS_BLOCK = 130696;
+exports.BRC20_GENESIS_BLOCK = 114007;
 class Brc20PgStore extends api_toolkit_1.BasePgStoreModule {
     sqlOr(partials) {
         return partials?.reduce((acc, curr) => this.sql `${acc} OR ${curr}`);
@@ -178,7 +178,7 @@ class Brc20PgStore extends api_toolkit_1.BasePgStoreModule {
             ticker: deploy.brc20.tick,
             max: deploy.brc20.max,
             limit: deploy.brc20.lim ?? null,
-            decimals: deploy.brc20.dec ?? '18',
+            decimals: deploy.brc20.dec ?? '8',
             tx_count: 1,
         };
         const deployRes = await this.sql `

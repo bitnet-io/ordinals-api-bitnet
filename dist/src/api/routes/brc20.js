@@ -74,25 +74,50 @@ const Brc20Routes = (fastify, options, done) => {
             summary: 'BRC-20 Token Details',
             description: 'Retrieves information for a BRC-20 token including supply and holders',
             tags: ['BIT-20'],
+            querystring: typebox_1.Type.Object({
+                ticker: typebox_1.Type.Optional(schemas_1.Brc20TickersParam),
+                // Sorting
+                order_by: typebox_1.Type.Optional(schemas_1.Brc20TokensOrderByParam),
+                // Pagination
+                offset: typebox_1.Type.Optional(schemas_1.OffsetParam),
+                limit: typebox_1.Type.Optional(schemas_1.LimitParam),
+            }),
             params: typebox_1.Type.Object({
                 ticker: schemas_1.Brc20TickerParam,
             }),
             response: {
-                200: schemas_1.Brc20TokenDetailsSchem,
-                404: schemas_1.NotFoundResponse,
+            //          200: Brc20TokenDetailsSchem,
+            //          404: NotFoundResponse,
             },
         },
-    }, async (request, reply) => {
-        const token = await fastify.db.brc20.getToken({ ticker: request.params.ticker });
-        if (!token) {
-            await reply.code(404).send(value_1.Value.Create(schemas_1.NotFoundResponse));
-        }
-        else {
-            await reply.send({
-                ticker: (0, helpers_1.parseBrc20Token)([token])[0],
-                supply: (0, helpers_1.parseBrc20Suppl)(token),
-            });
-        }
+    }, 
+    //    async (request, reply) => {
+    //      const token = await fastify.db.brc20.getToken({ ticker: request.params.ticker });
+    //      if (!token) {
+    //        await reply.code(404).send(Value.Create(NotFoundResponse));
+    //      } else {
+    //        await reply.send({
+    //          token: parseBrc20Token([token])[0],
+    //          supply: parseBrc20Suppl(token),
+    //        });
+    //      }
+    //    }
+    async (request, reply) => {
+        const limit = request.query.limit ?? helpers_1.DEFAULT_API_LIMIT;
+        const offset = request.query.offset ?? 0;
+        const response = await fastify.db.brc20.getTokens({
+            limit,
+            offset,
+            ticker: request.query.ticker,
+            order_by: request.query.order_by,
+        });
+        //      await reply.send(parseBrc20Token(response.results));
+        await reply.send({
+            //        limit,
+            //        offset,
+            //        total: response.total,
+            ticker: (0, helpers_1.parseBrc20Token)(response.results),
+        });
     });
     fastify.get('/brc-20/tokens/:ticker/holders', {
         schema: {
