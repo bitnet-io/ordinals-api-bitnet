@@ -68,6 +68,32 @@ const Brc20Routes = (fastify, options, done) => {
             });
         }
     });
+    fastify.get('/bit-20/tokens/:ticker', {
+        schema: {
+            operationId: 'getBrc20TokenDetails',
+            summary: 'BRC-20 Token Details',
+            description: 'Retrieves information for a BRC-20 token including supply and holders',
+            tags: ['BIT-20'],
+            params: typebox_1.Type.Object({
+                ticker: schemas_1.Brc20TickerParam,
+            }),
+            response: {
+                200: schemas_1.Brc20TokenDetailsSchem,
+                404: schemas_1.NotFoundResponse,
+            },
+        },
+    }, async (request, reply) => {
+        const token = await fastify.db.brc20.getToken({ ticker: request.params.ticker });
+        if (!token) {
+            await reply.code(404).send(value_1.Value.Create(schemas_1.NotFoundResponse));
+        }
+        else {
+            await reply.send({
+                ticker: (0, helpers_1.parseBrc20Token)([token])[0],
+                supply: (0, helpers_1.parseBrc20Suppl)(token),
+            });
+        }
+    });
     fastify.get('/brc-20/tokens/:ticker/holders', {
         schema: {
             operationId: 'getBrc20TokenHolders',
@@ -142,6 +168,36 @@ const Brc20Routes = (fastify, options, done) => {
             total: balances.total,
             results: (0, helpers_1.parseBrc20Balances)(balances.results),
         });
+    });
+    fastify.get('/bit-20/balances/:address', {
+        schema: {
+            operationId: 'getBrc20Balances',
+            summary: 'BRC-20 Balances',
+            description: 'Retrieves BRC-20 token balances for a Bitcoin address',
+            tags: ['BIT-20'],
+            params: typebox_1.Type.Object({
+                address: schemas_1.AddressParam,
+            }),
+            querystring: typebox_1.Type.Object({
+                ticker: typebox_1.Type.Optional(schemas_1.Brc20TickersParam),
+                block_height: typebox_1.Type.Optional(schemas_1.BlockHeightParam),
+                // Pagination
+                offset: typebox_1.Type.Optional(schemas_1.OffsetParam),
+                limit: typebox_1.Type.Optional(schemas_1.LimitParam),
+            }),
+            response: {},
+        },
+    }, async (request, reply) => {
+        const limit = request.query.limit ?? helpers_1.DEFAULT_API_LIMIT;
+        const offset = request.query.offset ?? 0;
+        const balances = await fastify.db.brc20.getBalances({
+            limit,
+            offset,
+            address: request.params.address,
+            ticker: request.query.ticker,
+            block_height: request.query.block_height ? parseInt(request.query.block_height) : undefined,
+        });
+        await reply.send((0, helpers_1.parseBrc20Balance)(balances.results));
     });
     fastify.get('/brc-20/activity', {
         schema: {

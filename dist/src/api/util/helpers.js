@@ -1,6 +1,6 @@
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.blockParam = exports.normalizedHexString = exports.has0xPrefix = exports.hexToBuffer = exports.parseSatPoint = exports.parseBrc20Holders = exports.parseBrc20Activities = exports.parseBrc20Balances = exports.parseBrc20Supply = exports.parseBrc20Tokens = exports.parseBlockTransfers = exports.parseInscriptionLocations = exports.parseDbInscription = exports.parseDbInscriptions = exports.DEFAULT_API_LIMIT = void 0;
+exports.blockParam = exports.normalizedHexString = exports.has0xPrefix = exports.hexToBuffer = exports.parseSatPoint = exports.parseBrc20Holders = exports.parseBrc20Activities = exports.parseBrc20Balance = exports.parseBrc20Balances = exports.parseBrc20Suppl = exports.parseBrc20Token = exports.parseBrc20Supply = exports.parseBrc20Tokens = exports.parseBlockTransfers = exports.parseInscriptionLocations = exports.parseDbInscription = exports.parseDbInscriptions = exports.DEFAULT_API_LIMIT = void 0;
 const bignumber_js_1 = require("bignumber.js");
 const types_1 = require("../../pg/brc20/types");
 const schemas_1 = require("../schemas");
@@ -106,15 +106,46 @@ function parseBrc20Supply(item) {
     };
 }
 exports.parseBrc20Supply = parseBrc20Supply;
+function parseBrc20Token(items) {
+    return items.map(i => ({
+        tick: i.ticker,
+        max_supply: decimals(i.max, i.decimals),
+        decimals: i.decimals,
+        limit_per_mint: i.limit ? decimals(i.limit, i.decimals) : null,
+        remaining_supply: decimals(i.minted_supply, i.decimals),
+        deploy_incr_number: parseInt(i.block_height),
+        //    holders: parseInt(item.holders),
+    }));
+}
+exports.parseBrc20Token = parseBrc20Token;
+function parseBrc20Suppl(item) {
+    return {
+        //    max_supply: decimals(item.max, item.decimals),
+        //    minted_supply: decimals(item.minted_supply, item.decimals),
+        holders: parseInt(item.holders),
+    };
+}
+exports.parseBrc20Suppl = parseBrc20Suppl;
 function parseBrc20Balances(items) {
     return items.map(i => ({
         ticker: i.ticker,
         available_balance: decimals(i.avail_balance, i.decimals),
         transferrable_balance: decimals(i.trans_balance, i.decimals),
         overall_balance: decimals(i.total_balance, i.decimals),
+        decimals: i.decimals,
     }));
 }
 exports.parseBrc20Balances = parseBrc20Balances;
+function parseBrc20Balance(items) {
+    return items.map(i => ({
+        tick: i.ticker,
+        available_balance: decimals(i.avail_balance, i.decimals),
+        transferrable_balance: decimals(i.trans_balance, i.decimals),
+        overall_balance: decimals(i.total_balance, i.decimals),
+        decimals: i.decimals,
+    }));
+}
+exports.parseBrc20Balance = parseBrc20Balance;
 function parseBrc20Activities(items) {
     return items.map(i => {
         const activity = {

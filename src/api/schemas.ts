@@ -394,8 +394,21 @@ export const Brc20BalanceResponseSchema = Type.Object({
   available_balance: Type.String({ examples: ['1500.00000'] }),
   transferrable_balance: Type.String({ examples: ['500.00000'] }),
   overall_balance: Type.String({ examples: ['2000.00000'] }),
+  decimals: Type.Integer({ examples: [18] }),
+
 });
 export type Brc20BalanceResponse = Static<typeof Brc20BalanceResponseSchema>;
+
+
+export const Brc20BalanceResponseSchem = Type.Object({
+  tick: Type.String({ examples: ['PEPE'] }),
+  available_balance: Type.String({ examples: ['1500.00000'] }),
+  transferrable_balance: Type.String({ examples: ['500.00000'] }),
+  overall_balance: Type.String({ examples: ['2000.00000'] }),
+  decimals: Type.Integer({ examples: [18] }),
+
+});
+export type Brc20BalanceRespons = Static<typeof Brc20BalanceResponseSchem>;
 
 export const Brc20ActivityResponseSchema = Type.Object({
   operation: Type.Union([
@@ -456,6 +469,7 @@ export const Brc20ActivityResponseSchema = Type.Object({
 });
 export type Brc20ActivityResponse = Static<typeof Brc20ActivityResponseSchema>;
 
+
 export const Brc20TokenResponseSchema = Type.Object(
   {
     id: Type.String({
@@ -481,12 +495,56 @@ export const Brc20TokenResponseSchema = Type.Object(
 );
 export type Brc20TokenResponse = Static<typeof Brc20TokenResponseSchema>;
 
+
+
+
+
+
+
+
+
+
+export const Brc20TokenResponseSchem = Type.Object(
+  {
+    tick: Type.String({ examples: ['PEPE'] }),
+    max_supply: Type.String({ examples: ['21000000'] }),
+    decimals: Type.Integer({ examples: [18] }),
+    limit_per_mint: Nullable(Type.String({ examples: ['100000'] })),
+    remaining_supply: Type.String({ examples: ['1000000'] }),
+    deploy_incr_number: Type.Integer({ examples: [752860] }),
+  },
+  { title: 'BIT-20 Token Response' }
+);
+export type Brc20TokenRespons = Static<typeof Brc20TokenResponseSchem>;
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 export const Brc20SupplySchema = Type.Object({
   max_supply: Type.String({ examples: ['21000000'] }),
   minted_supply: Type.String({ examples: ['1000000'] }),
   holders: Type.Integer({ examples: [240] }),
 });
 export type Brc20Supply = Static<typeof Brc20SupplySchema>;
+
+
+export const Brc20SupplySchem = Type.Object({
+//  max_supply: Type.String({ examples: ['21000000'] }),
+//  minted_supply: Type.String({ examples: ['1000000'] }),
+  holders: Type.Integer({ examples: [240] }),
+});
+export type Brc20Suppl = Static<typeof Brc20SupplySchem>;
 
 export const Brc20HolderResponseSchema = Type.Object({
   address: Type.String({
@@ -504,6 +562,17 @@ export const Brc20TokenDetailsSchema = Type.Object(
   { title: 'BRC-20 Token Details Response' }
 );
 export type Brc20TokenDetails = Static<typeof Brc20TokenDetailsSchema>;
+
+
+
+export const Brc20TokenDetailsSchem = Type.Object(
+  {
+    ticker: Brc20TokenResponseSchem,
+    supply: Brc20SupplySchem,
+  },
+  { title: 'BRC-20 Token Details Response' }
+);
+export type Brc20TokenDetail = Static<typeof Brc20TokenDetailsSchem>;
 
 export const NotFoundResponse = Type.Object(
   {

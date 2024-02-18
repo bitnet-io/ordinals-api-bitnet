@@ -14,7 +14,9 @@ import {
   Brc20TickerParam,
   Brc20TickersParam,
   Brc20TokenDetailsSchema,
+  Brc20TokenDetailsSchem,
   Brc20TokenResponseSchema,
+  Brc20TokenResponseSchem,
   LimitParam,
   NotFoundResponse,
   OffsetParam,
@@ -25,9 +27,12 @@ import {
   DEFAULT_API_LIMIT,
   parseBrc20Activities,
   parseBrc20Balances,
+  parseBrc20Balance,
   parseBrc20Holders,
   parseBrc20Supply,
   parseBrc20Tokens,
+  parseBrc20Suppl,
+  parseBrc20Token,
 } from '../util/helpers';
 
 export const Brc20Routes: FastifyPluginCallback<
@@ -105,6 +110,42 @@ export const Brc20Routes: FastifyPluginCallback<
       }
     }
   );
+
+
+
+
+  fastify.get(
+    '/bit-20/tokens/:ticker',
+    {
+      schema: {
+        operationId: 'getBrc20TokenDetails',
+        summary: 'BRC-20 Token Details',
+        description: 'Retrieves information for a BRC-20 token including supply and holders',
+        tags: ['BIT-20'],
+        params: Type.Object({
+          ticker: Brc20TickerParam,
+        }),
+        response: {
+          200: Brc20TokenDetailsSchem,
+          404: NotFoundResponse,
+        },
+      },
+    },
+    async (request, reply) => {
+      const token = await fastify.db.brc20.getToken({ ticker: request.params.ticker });
+      if (!token) {
+        await reply.code(404).send(Value.Create(NotFoundResponse));
+      } else {
+        await reply.send({
+          ticker: parseBrc20Token([token])[0],
+          supply: parseBrc20Suppl(token),
+        });
+      }
+    }
+  );
+
+
+
 
   fastify.get(
     '/brc-20/tokens/:ticker/holders',
@@ -190,6 +231,64 @@ export const Brc20Routes: FastifyPluginCallback<
       });
     }
   );
+
+
+fastify.get(
+    '/bit-20/balances/:address',
+    {
+      schema: {
+        operationId: 'getBrc20Balances',
+        summary: 'BRC-20 Balances',
+        description: 'Retrieves BRC-20 token balances for a Bitcoin address',
+        tags: ['BIT-20'],
+        params: Type.Object({
+          address: AddressParam,
+        }),
+        querystring: Type.Object({
+          ticker: Type.Optional(Brc20TickersParam),
+          block_height: Type.Optional(BlockHeightParam),
+          // Pagination
+          offset: Type.Optional(OffsetParam),
+          limit: Type.Optional(LimitParam),
+        }),
+        response: {
+        },
+      },
+    },
+    async (request, reply) => {
+      const limit = request.query.limit ?? DEFAULT_API_LIMIT;
+      const offset = request.query.offset ?? 0;
+      const balances = await fastify.db.brc20.getBalances({
+        limit,
+        offset,
+        address: request.params.address,
+        ticker: request.query.ticker,
+        block_height: request.query.block_height ? parseInt(request.query.block_height) : undefined,
+      });
+
+      await reply.send(parseBrc20Balance(balances.results));
+
+    }
+  );
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
   fastify.get(
     '/brc-20/activity',

@@ -3,7 +3,6 @@ Object.defineProperty(exports, "__esModule", { value: true });
 exports.revealInsertsFromOrdhookEvent = exports.removeNullBytes = exports.objRemoveUndefinedValues = exports.throwOnFirstRejected = exports.getInscriptionRecursion = exports.assertNoBlockInscriptionGap = void 0;
 const api_toolkit_1 = require("@hirosystems/api-toolkit");
 const helpers_1 = require("../api/util/helpers");
-const chainhook_client_1 = require("@hirosystems/chainhook-client");
 const env_1 = require("../env");
 const types_1 = require("./types");
 const ordinal_satoshi_1 = require("../api/util/ordinal-satoshi");
@@ -19,8 +18,10 @@ function assertNoBlockInscriptionGap(args) {
     for (let n = 0; n < args.newNumbers.length; n++) {
         const curr = args.currentNumber + n;
         const next = args.newNumbers[n];
-//        if (next !== curr + 1)
-  //          throw new chainhook_client_1.BadPayloadRequestError(`Block inscription gap detected: Attempting to insert #${next} (${args.newBlockHeight}) but current max is #${curr}. Chain tip is at ${args.currentBlockHeight}.`);
+        //    if (next !== curr + 1)
+        //    throw new BadPayloadRequestError(
+        //    `Block inscription gap detected: Attempting to insert #${next} (${args.newBlockHeight}) but current max is #${curr}. Chain tip is at ${args.currentBlockHeight}.`
+        //  );
     }
 }
 exports.assertNoBlockInscriptionGap = assertNoBlockInscriptionGap;

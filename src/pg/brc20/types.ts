@@ -80,7 +80,29 @@ export type DbBrc20Token = {
   tx_count: string;
 };
 
+
+export type DbBrc20Toke = {
+  id: string;
+  genesis_id: string;
+  number: string;
+  block_height: string;
+  tx_id: string;
+  address: string;
+  ticker: string;
+  max: string;
+  limit?: string;
+  decimals: number;
+  timestamp: number;
+  minted_supply: string;
+  tx_count: string;
+};
+
 export type DbBrc20TokenWithSupply = DbBrc20Token & {
+  minted_supply: string;
+  holders: string;
+};
+
+export type DbBrc20TokenWithSuppl = DbBrc20Toke & {
   minted_supply: string;
   holders: string;
 };
@@ -92,6 +114,14 @@ export type DbBrc20Holder = {
 };
 
 export type DbBrc20Balance = {
+  ticker: string;
+  decimals: number;
+  avail_balance: string;
+  trans_balance: string;
+  total_balance: string;
+};
+
+export type DbBrc20Balanc = {
   ticker: string;
   decimals: number;
   avail_balance: string;

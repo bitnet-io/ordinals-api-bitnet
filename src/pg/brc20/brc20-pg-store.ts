@@ -25,6 +25,8 @@ import {
   DbBrc20MintEvent,
   DbBrc20Token,
   DbBrc20TokenWithSupply,
+  DbBrc20Toke,
+  DbBrc20TokenWithSuppl,
   DbBrc20TransferEvent,
 } from './types';
 import { Brc20Deploy, Brc20Mint, Brc20Transfer, brc20FromInscriptionContent } from './helpers';
@@ -650,6 +652,45 @@ export class Brc20PgStore extends BasePgStoreModule {
     };
   }
 
+  async getTok(
+    args: { ticker?: string[]; order_by?: Brc20TokenOrderBy } & DbInscriptionIndexPaging
+  ): Promise<DbPaginatedResult<DbBrc20Toke>> {
+    const tickerPrefixCondition = this.sqlOr(
+      args.ticker?.map(t => this.sql`d.ticker_lower LIKE LOWER(${t}) || '%'`)
+    );
+    const orderBy =
+      args.order_by === Brc20TokenOrderBy.tx_count
+        ? this.sql`tx_count DESC` // tx_count
+        : this.sql`l.block_height DESC, l.tx_index DESC`; // default: `index`
+    const results = await this.sql<(DbBrc20Token & { total: number })[]>`
+      ${
+        args.ticker === undefined
+          ? this.sql`WITH global_count AS (
+              SELECT COALESCE(count, 0) AS count FROM brc20_counts_by_tokens
+            )`
+          : this.sql``
+      }
+      SELECT
+        ${this.sql(BRC20_DEPLOYS_COLUMNS.map(c => `d.${c}`))},
+        i.number, i.genesis_id, l.timestamp,
+        ${
+          args.ticker ? this.sql`COUNT(*) OVER()` : this.sql`(SELECT count FROM global_count)`
+        } AS total
+      FROM brc20_deploys AS d
+      INNER JOIN inscriptions AS i ON i.id = d.inscription_id
+      INNER JOIN genesis_locations AS g ON g.inscription_id = d.inscription_id
+      INNER JOIN locations AS l ON l.id = g.location_id
+      ${tickerPrefixCondition ? this.sql`WHERE ${tickerPrefixCondition}` : this.sql``}
+      ORDER BY ${orderBy}
+      OFFSET ${args.offset}
+      LIMIT ${args.limit}
+    `;
+    return {
+      total: results[0]?.total ?? 0,
+      results: results ?? [],
+    };
+  }
+
   async getBalances(
     args: {
       address: string;
@@ -726,6 +767,38 @@ export class Brc20PgStore extends BasePgStoreModule {
     `;
     if (result.count) return result[0];
   }
+
+
+
+
+
+  async getToke(args: { ticker: string }): Promise<DbBrc20TokenWithSuppl | undefined> {
+    const result = await this.sql<DbBrc20TokenWithSuppl[]>`
+      WITH token AS (
+        SELECT
+          ${this.sql(BRC20_DEPLOYS_COLUMNS.map(c => `d.${c}`))},
+          i.number, i.genesis_id, l.timestamp
+        FROM brc20_deploys AS d
+        INNER JOIN inscriptions AS i ON i.id = d.inscription_id
+        INNER JOIN genesis_locations AS g ON g.inscription_id = d.inscription_id
+        INNER JOIN locations AS l ON l.id = g.location_id
+        WHERE ticker_lower = LOWER(${args.ticker})
+      ),
+      holders AS (
+        SELECT COUNT(*) AS count
+        FROM brc20_total_balances
+        WHERE brc20_deploy_id = (SELECT id FROM token) AND total_balance > 0
+      )
+      SELECT *, COALESCE((SELECT count FROM holders), 0) AS holders
+      FROM token
+    `;
+    if (result.count) return result[0];
+  }
+
+
+
+
+
 
   async getTokenHolders(
     args: {
